@@ -7,6 +7,7 @@ interface Package {
   title: string;
   description: string;
   price: string;
+  image_url?: string;
 }
 
 export default function PlannerPackagesPage() {
@@ -15,6 +16,7 @@ export default function PlannerPackagesPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [adding, setAdding] = useState(false);
 
   const loadPackages = async () => {
@@ -31,6 +33,27 @@ export default function PlannerPackagesPage() {
     loadPackages();
   }, []);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadToast = toast.loading("Uploading package photo...");
+    try {
+      const { data } = await apiClient.post("/planners/upload-image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setImageUrl(data.url);
+      toast.success("Photo uploaded!", { id: uploadToast });
+    } catch {
+      toast.error("Upload failed", { id: uploadToast });
+    }
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdding(true);
@@ -39,10 +62,12 @@ export default function PlannerPackagesPage() {
         title,
         description,
         price: Number(price),
+        image_url: imageUrl,
       });
       setTitle("");
       setDescription("");
       setPrice("");
+      setImageUrl("");
       toast.success("Package added");
       loadPackages();
     } catch (err: any) {
@@ -69,7 +94,7 @@ export default function PlannerPackagesPage() {
     <div className="max-w-lg">
       <h1 className="text-2xl font-semibold mb-6">Your Packages</h1>
 
-      <form onSubmit={handleAdd} className="space-y-3 mb-8 border rounded-xl p-4 bg-white">
+      <form onSubmit={handleAdd} className="space-y-4 mb-8 border rounded-xl p-4 bg-white">
         <input
           className="w-full border rounded-lg px-3 py-2 text-sm"
           placeholder="Package title (e.g. Standard Decoration)"
@@ -93,8 +118,28 @@ export default function PlannerPackagesPage() {
           onChange={(e) => setPrice(e.target.value)}
           required
         />
+        
+        <div className="space-y-2 border-t pt-3">
+          <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider block">Package Cover Photo (Optional)</label>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="text-xs text-neutral-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 cursor-pointer"
+            />
+            {imageUrl && (
+              <img
+                src={imageUrl}
+                alt="Preview"
+                className="w-10 h-10 object-cover rounded-lg border shrink-0"
+              />
+            )}
+          </div>
+        </div>
+
         <button
-          className="bg-black text-white rounded-lg px-4 py-2 text-sm disabled:opacity-50"
+          className="bg-black text-white rounded-lg px-4 py-2 text-sm disabled:opacity-50 mt-2"
           type="submit"
           disabled={adding}
         >
@@ -110,13 +155,22 @@ export default function PlannerPackagesPage() {
         <div className="border rounded-xl bg-white divide-y">
           {packages.map((pkg) => (
             <div key={pkg.id} className="flex items-center justify-between px-4 py-3">
-              <div>
-                <p className="text-sm font-medium">{pkg.title}</p>
-                <p className="text-xs text-neutral-500">{pkg.description}</p>
-                <p className="text-sm font-semibold mt-1">₹{pkg.price}</p>
+              <div className="flex items-center gap-3">
+                {pkg.image_url && (
+                  <img
+                    src={pkg.image_url}
+                    alt={pkg.title}
+                    className="w-12 h-12 object-cover rounded-lg border shrink-0"
+                  />
+                )}
+                <div>
+                  <p className="text-sm font-medium">{pkg.title}</p>
+                  <p className="text-xs text-neutral-500">{pkg.description}</p>
+                  <p className="text-sm font-semibold mt-1">₹{pkg.price}</p>
+                </div>
               </div>
               <button
-                className="text-xs text-red-500"
+                className="text-xs text-red-500 shrink-0ml-4"
                 onClick={() => handleDelete(pkg.id)}
               >
                 Remove

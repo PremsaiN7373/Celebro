@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     PlannerProfileViewSet, PackageViewSet, MyPlannerProfileView,
     SavedPlannersListView, BlockedDateViewSet, PortfolioPhotoViewSet,
+    ImageUploadView,
 )
 
 router = DefaultRouter()
@@ -14,4 +15,5 @@ router.register("", PlannerProfileViewSet, basename="planner")
 urlpatterns = [
     path("me/", MyPlannerProfileView.as_view(), name="planner-me"),
     path("saved/", SavedPlannersListView.as_view(), name="planner-saved"),
+    path("upload-image/", ImageUploadView.as_view(), name="planner-upload-image"),
 ] + router.urls

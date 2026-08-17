@@ -29,6 +29,27 @@ export default function PlannerPortfolioPage() {
     loadPhotos();
   }, []);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadToast = toast.loading("Uploading portfolio photo...");
+    try {
+      const { data } = await apiClient.post("/planners/upload-image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setImageUrl(data.url);
+      toast.success("Photo uploaded!", { id: uploadToast });
+    } catch {
+      toast.error("Upload failed", { id: uploadToast });
+    }
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdding(true);
@@ -56,28 +77,48 @@ export default function PlannerPortfolioPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="font-display text-2xl text-ink-900 dark:text-white mb-1">
+      <h1 className="font-display text-2xl text-ink-900 dark:text-white mb-1 font-semibold">
         Your Portfolio
       </h1>
       <p className="text-sm text-ink-500 mb-6">
         Showcase past work — this shows on your public profile for customers browsing the Marketplace.
       </p>
 
-      <form onSubmit={handleAdd} className="flex flex-wrap gap-2 mb-6 items-center">
+      <form onSubmit={handleAdd} className="flex flex-col gap-3 mb-8 border rounded-xl p-4 bg-white max-w-xl">
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider block">Upload Photo file</label>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="text-xs text-neutral-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 cursor-pointer"
+            />
+            {imageUrl && (
+              <img
+                src={imageUrl}
+                alt="Upload preview"
+                className="w-10 h-10 object-cover rounded-lg border shrink-0"
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="text-xs text-neutral-400 font-semibold text-center my-1">— OR USE EXTERNAL URL —</div>
+
         <input
-          className="input-field flex-1 min-w-[200px]"
+          className="input-field w-full"
           placeholder="Image URL (https://...)"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
-          required
         />
         <input
-          className="input-field flex-1 min-w-[140px]"
+          className="input-field w-full"
           placeholder="Caption (optional)"
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
         />
-        <button className="btn-primary" disabled={adding} type="submit">
+        <button className="btn-primary self-start" disabled={adding} type="submit">
           {adding ? "Adding..." : "Add photo"}
         </button>
       </form>

@@ -152,3 +152,35 @@ class PortfolioPhotoViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         profile = self.request.user.planner_profile
         serializer.save(planner=profile)
+
+
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+import uuid
+import os
+
+class ImageUploadView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsPlanner]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, format=None):
+        if 'file' not in request.FILES:
+            return Response({"error": "No file uploaded"}, status=400)
+        
+        uploaded_file = request.FILES['file']
+        ext = os.path.splitext(uploaded_file.name)[1]
+        filename = f"{uuid.uuid4()}{ext}"
+        
+        # Save file to media/uploads/
+        path = default_storage.save(os.path.join('uploads', filename), ContentFile(uploaded_file.read()))
+        
+        # Build absolute media URL path, e.g., http://localhost:8000/media/uploads/abc.png
+        media_path = f"/{settings.MEDIA_URL}{path}"
+        if media_path.startswith("//"):
+            media_path = media_path.replace("//", "/")
+        file_url = request.build_absolute_uri(media_path)
+        
+        return Response({"url": file_url})

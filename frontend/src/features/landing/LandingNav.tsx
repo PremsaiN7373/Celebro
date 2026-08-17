@@ -4,7 +4,6 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { IconMenu, IconClose } from "./icons";
 
 const LINKS = [
-  { label: "Celebrations", href: "/celebrations" },
   { label: "Experiences", href: "/experiences" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Lookbook", href: "/lookbook" },
@@ -66,12 +65,24 @@ export default function LandingNav() {
         {/* Right Action Buttons */}
         <div className="hidden md:flex items-center gap-3">
           {localStorage.getItem("access_token") ? (
-            <Link
-              to="/dashboard"
-              className="bg-[#5B21B6] hover:bg-[#4C1D95] text-white text-sm font-bold px-5 py-2.5 rounded-[10px] shadow-md transition-all hover:scale-105 flex items-center gap-2"
-            >
-              Dashboard ➔
-            </Link>
+            <>
+              <Link
+                to="/dashboard"
+                className="bg-[#5B21B6] hover:bg-[#4C1D95] text-white text-sm font-bold px-5 py-2.5 rounded-[10px] shadow-md transition-all hover:scale-105 flex items-center gap-2"
+              >
+                Dashboard ➔
+              </Link>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("access_token");
+                  localStorage.removeItem("refresh_token");
+                  window.location.href = "/login";
+                }}
+                className="text-sm font-semibold text-[#17142A] hover:text-[#5B21B6] px-3 py-2 transition-colors cursor-pointer"
+              >
+                Sign out
+              </button>
+            </>
           ) : (
             <>
               <Link
@@ -132,20 +143,45 @@ export default function LandingNav() {
               ))}
 
               <div className="flex flex-col gap-2.5 mt-5">
-                <Link
-                  to="/login"
-                  onClick={() => setOpen(false)}
-                  className="w-full text-center py-3 rounded-[10px] border border-[#E9E4F5] text-[#17142A] font-semibold bg-[#F5F3FF]"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setOpen(false)}
-                  className="w-full text-center py-3 rounded-[10px] bg-[#5B21B6] text-white font-bold shadow-md"
-                >
-                  Plan a Celebration ✦
-                </Link>
+                {localStorage.getItem("access_token") ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className="w-full text-center py-3 rounded-[10px] bg-[#5B21B6] text-white font-bold shadow-md"
+                    >
+                      Dashboard ➔
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setOpen(false);
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("refresh_token");
+                        window.location.href = "/login";
+                      }}
+                      className="w-full text-center py-3 rounded-[10px] border border-[#E9E4F5] text-[#17142A] font-semibold bg-[#F5F3FF] cursor-pointer"
+                    >
+                      Sign out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setOpen(false)}
+                      className="w-full text-center py-3 rounded-[10px] border border-[#E9E4F5] text-[#17142A] font-semibold bg-[#F5F3FF]"
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setOpen(false)}
+                      className="w-full text-center py-3 rounded-[10px] bg-[#5B21B6] text-white font-bold shadow-md"
+                    >
+                      Plan a Celebration ✦
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
@@ -154,7 +190,3 @@ export default function LandingNav() {
     </header>
   );
 }
-
-
-
-

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const fieldClass =
-  "w-full bg-transparent text-sm text-[#17142A] font-semibold placeholder:text-[#6B6780] outline-none";
+  "w-full bg-transparent text-sm text-[#17142A] font-bold placeholder:text-[#6B6780] outline-none border-0 p-0 focus:ring-0";
 
 export default function SearchPanel({ activeId, onActiveChange }: Props) {
   const navigate = useNavigate();
@@ -29,17 +29,19 @@ export default function SearchPanel({ activeId, onActiveChange }: Props) {
   };
 
   return (
-    <div className="bg-white border border-[#E9E4F5] rounded-[16px] p-2.5 shadow-[0_4px_20px_rgba(91,33,182,0.06)]">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-1.5">
+    <div className="bg-white border border-[#E9E4F5] rounded-3xl md:rounded-full p-2 shadow-[0_8px_30px_rgba(91,33,182,0.05)] hover:shadow-[0_12px_40px_rgba(91,33,182,0.08)] transition-all duration-300">
+      <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-0">
         {/* Celebrating */}
-        <label className="md:col-span-1 rounded-[12px] bg-[#F5F3FF] px-4 py-3 hover:bg-white transition-colors cursor-pointer border border-[#E9E4F5]">
-          <span className="block text-[10px] uppercase tracking-wider text-[#5B21B6] font-bold mb-1">Celebrating</span>
-          <div className="flex items-center gap-2">
-            <span className="text-base leading-none">{CATEGORIES.find((c) => c.id === activeId)?.emoji}</span>
+        <label className="flex-1 md:flex-[1.2] flex flex-col justify-center px-5 py-3 hover:bg-[#F5F3FF]/50 rounded-2xl md:rounded-l-full transition-colors cursor-pointer group">
+          <span className="block text-[10px] uppercase tracking-widest text-[#5B21B6] font-bold mb-1">Celebrating</span>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl leading-none group-hover:scale-115 transition-transform duration-255">
+              {CATEGORIES.find((c) => c.id === activeId)?.emoji}
+            </span>
             <select
               value={activeId}
               onChange={(e) => onActiveChange(e.target.value as SceneVariant)}
-              className={`${fieldClass} appearance-none cursor-pointer`}
+              className={`${fieldClass} appearance-none cursor-pointer pr-4`}
             >
               {CATEGORIES.map((c) => (
                 <option key={c.id} value={c.id} className="bg-white text-[#17142A]">
@@ -50,30 +52,53 @@ export default function SearchPanel({ activeId, onActiveChange }: Props) {
           </div>
         </label>
 
+        {/* Divider 1 */}
+        <div className="hidden md:block w-px h-8 bg-[#E9E4F5] self-center" />
+
         {/* Location */}
-        <label className="rounded-[12px] bg-[#F5F3FF] px-4 py-3 hover:bg-white transition-colors border border-[#E9E4F5]">
-          <span className="block text-[10px] uppercase tracking-wider text-[#6B6780] font-bold mb-1">Location</span>
-          <div className="flex items-center gap-2 text-[#6B6780]">
-            <IconPin width={15} height={15} />
-            <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City or area" className={fieldClass} />
+        <label className="flex-1 md:flex-[1.2] flex flex-col justify-center px-5 py-3 hover:bg-[#F5F3FF]/50 rounded-2xl transition-colors cursor-pointer group">
+          <span className="block text-[10px] uppercase tracking-widest text-[#6B6780] font-bold mb-1">Location</span>
+          <div className="flex items-center gap-2.5 text-[#6B6780] group-hover:text-[#5B21B6] transition-colors">
+            <IconPin width={16} height={16} />
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="City or area"
+              className={fieldClass}
+            />
           </div>
         </label>
+
+        {/* Divider 2 */}
+        <div className="hidden md:block w-px h-8 bg-[#E9E4F5] self-center" />
 
         {/* Date */}
-        <label className="rounded-[12px] bg-[#F5F3FF] px-4 py-3 hover:bg-white transition-colors border border-[#E9E4F5]">
-          <span className="block text-[10px] uppercase tracking-wider text-[#6B6780] font-bold mb-1">Date</span>
-          <div className="flex items-center gap-2 text-[#6B6780]">
-            <IconCalendar width={15} height={15} />
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={fieldClass} />
+        <label className="flex-1 md:flex-[1.1] flex flex-col justify-center px-5 py-3 hover:bg-[#F5F3FF]/50 rounded-2xl transition-colors cursor-pointer group">
+          <span className="block text-[10px] uppercase tracking-widest text-[#6B6780] font-bold mb-1">Date</span>
+          <div className="flex items-center gap-2.5 text-[#6B6780] group-hover:text-[#5B21B6] transition-colors">
+            <IconCalendar width={16} height={16} />
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={`${fieldClass} cursor-pointer`}
+            />
           </div>
         </label>
 
+        {/* Divider 3 */}
+        <div className="hidden md:block w-px h-8 bg-[#E9E4F5] self-center" />
+
         {/* Guests */}
-        <label className="rounded-[12px] bg-[#F5F3FF] px-4 py-3 hover:bg-white transition-colors border border-[#E9E4F5]">
-          <span className="block text-[10px] uppercase tracking-wider text-[#6B6780] font-bold mb-1">Guests</span>
-          <div className="flex items-center gap-2 text-[#6B6780]">
-            <IconUsers width={15} height={15} />
-            <select value={guests} onChange={(e) => setGuests(e.target.value)} className={`${fieldClass} appearance-none cursor-pointer`}>
+        <label className="flex-1 md:flex-[0.9] flex flex-col justify-center px-5 py-3 hover:bg-[#F5F3FF]/50 rounded-2xl transition-colors cursor-pointer group">
+          <span className="block text-[10px] uppercase tracking-widest text-[#6B6780] font-bold mb-1">Guests</span>
+          <div className="flex items-center gap-2.5 text-[#6B6780] group-hover:text-[#5B21B6] transition-colors">
+            <IconUsers width={16} height={16} />
+            <select
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className={`${fieldClass} appearance-none cursor-pointer`}
+            >
               <option value="" className="bg-white">Any</option>
               <option value="1-10" className="bg-white">Up to 10</option>
               <option value="10-30" className="bg-white">10–30</option>
@@ -83,24 +108,33 @@ export default function SearchPanel({ activeId, onActiveChange }: Props) {
           </div>
         </label>
 
-        {/* Budget + submit */}
-        <div className="flex gap-1.5">
-          <label className="flex-1 rounded-[12px] bg-[#F5F3FF] px-4 py-3 hover:bg-white transition-colors border border-[#E9E4F5]">
-            <span className="block text-[10px] uppercase tracking-wider text-[#6B6780] font-bold mb-1">Budget</span>
-            <div className="flex items-center gap-2 text-[#6B6780]">
-              <IconWallet width={15} height={15} />
-              <select value={budget} onChange={(e) => setBudget(e.target.value)} className={`${fieldClass} appearance-none cursor-pointer`}>
-                <option value="" className="bg-white">Any</option>
-                <option value="budget" className="bg-white">Modest</option>
-                <option value="mid" className="bg-white">Comfortable</option>
-                <option value="premium" className="bg-white">Premium</option>
-              </select>
-            </div>
-          </label>
+        {/* Divider 4 */}
+        <div className="hidden md:block w-px h-8 bg-[#E9E4F5] self-center" />
+
+        {/* Budget */}
+        <label className="flex-1 md:flex-[0.9] flex flex-col justify-center px-5 py-3 hover:bg-[#F5F3FF]/50 rounded-2xl transition-colors cursor-pointer group">
+          <span className="block text-[10px] uppercase tracking-widest text-[#6B6780] font-bold mb-1">Budget</span>
+          <div className="flex items-center gap-2.5 text-[#6B6780] group-hover:text-[#5B21B6] transition-colors">
+            <IconWallet width={16} height={16} />
+            <select
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              className={`${fieldClass} appearance-none cursor-pointer`}
+            >
+              <option value="" className="bg-white">Any</option>
+              <option value="budget" className="bg-white">Modest</option>
+              <option value="mid" className="bg-white">Comfortable</option>
+              <option value="premium" className="bg-white">Premium</option>
+            </select>
+          </div>
+        </label>
+
+        {/* Submit Button */}
+        <div className="px-2 py-1 flex items-center justify-end shrink-0">
           <button
             onClick={submit}
             aria-label="Find my celebration"
-            className="shrink-0 grid place-items-center w-14 md:w-14 rounded-[12px] btn-primary shadow-xs active:scale-95 transition-all"
+            className="w-full md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full bg-[#5B21B6] hover:bg-[#4C1D95] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(91,33,182,0.3)] hover:shadow-[0_6px_20px_rgba(91,33,182,0.4)] hover:scale-105 active:scale-95 transition-all duration-200"
           >
             <IconSearch />
           </button>

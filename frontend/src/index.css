@@ -44,7 +44,62 @@
   }
 }
 
+/* Event Workspace Page Light Theme Conversion Overrides */
+.event-workspace-page .bg-noir-card {
+  background-color: #FFFFFF !important;
+  border-color: #E9E4F5 !important;
+  color: #17142A !important;
+}
 
+.event-workspace-page .text-white {
+  color: #17142A !important;
+}
 
+.event-workspace-page .text-white\/60,
+.event-workspace-page .text-white\/50,
+.event-workspace-page .text-white\/70,
+.event-workspace-page .text-white\/80,
+.event-workspace-page .text-white\/90 {
+  color: #6B6780 !important;
+}
 
+.event-workspace-page .border-white\/12,
+.event-workspace-page .border-white\/15,
+.event-workspace-page .border-white\/10 {
+  border-color: #E9E4F5 !important;
+}
+
+.event-workspace-page .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #E9E4F5 !important;
+}
+
+.event-workspace-page .bg-white\/\[0\.04\],
+.event-workspace-page .bg-white\/\[0\.06\] {
+  background-color: #FCFAFF !important;
+  border-color: #E9E4F5 !important;
+  color: #17142A !important;
+}
+
+/* Inactive tabs on light page background */
+.event-workspace-page button.text-white\/60 {
+  color: #6B6780 !important;
+}
+.event-workspace-page button.text-white\/60:hover {
+  color: #17142A !important;
+  background-color: #F5F3FF !important;
+}
+
+/* Inputs, select, and options inside forms */
+.event-workspace-page input,
+.event-workspace-page select,
+.event-workspace-page textarea {
+  background-color: #FFFFFF !important;
+  border-color: #E9E4F5 !important;
+  color: #17142A !important;
+}
+
+.event-workspace-page option {
+  background-color: #FFFFFF !important;
+  color: #17142A !important;
+}
 

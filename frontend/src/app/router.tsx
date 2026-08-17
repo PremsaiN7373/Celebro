@@ -26,7 +26,6 @@ import PaymentsPage from "../features/payments/PaymentsPage";
 import AdminPage from "../features/admin/AdminPage";
 import PublicInvitePage from "../features/invitations/PublicInvitePage";
 import ComparePage from "../features/marketplace/ComparePage";
-import CelebrationsPage from "../features/landing/pages/CelebrationsPage";
 import ExperiencesPage from "../features/landing/pages/ExperiencesPage";
 import HowItWorksPage from "../features/landing/pages/HowItWorksPage";
 import LookbookPage from "../features/landing/pages/LookbookPage";
@@ -36,7 +35,7 @@ import ProtectedRoute from "./ProtectedRoute";
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
   { path: "/landing", element: <LandingPage /> },
-  { path: "/celebrations", element: <CelebrationsPage /> },
+  { path: "/celebrations", element: <Navigate to="/experiences" replace /> },
   { path: "/experiences", element: <ExperiencesPage /> },
   { path: "/how-it-works", element: <HowItWorksPage /> },
   { path: "/lookbook", element: <LookbookPage /> },

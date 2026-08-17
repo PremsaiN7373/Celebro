@@ -5,7 +5,7 @@ from .models import PlannerProfile, Package, SavedPlanner, BlockedDate, Portfoli
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
-        fields = ["id", "title", "description", "price", "created_at"]
+        fields = ["id", "title", "description", "price", "image_url", "created_at"]
         read_only_fields = ["id", "created_at"]
 
 

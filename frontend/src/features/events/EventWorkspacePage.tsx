@@ -202,7 +202,7 @@ function WeatherWidget({ date, venue }: { date: string; venue: string }) {
       {status === "loading" ? (
         <p className="text-xs text-white/50">Retrieving forecast...</p>
       ) : (
-        <p className="text-sm font-medium text-champagne-300">
+        <p className="text-sm font-medium text-txtsecondary">
           {weatherEmoji(weather!.code)} {Math.round(weather!.temp)}°C expected in {venue}
         </p>
       )}
@@ -1060,6 +1060,60 @@ function GalleryTab({ eventId }: { eventId: string }) {
   );
 }
 
+function ChatTab({ eventId }: { eventId: string }) {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadBookings = async () => {
+      try {
+        const { data } = await apiClient.get("/bookings/", { params: { event: eventId } });
+        setBookings(data.results ?? data);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBookings();
+  }, [eventId]);
+
+  if (loading) return <p className="text-white/60 text-sm">Loading chat sessions...</p>;
+
+  const activeBookings = bookings.filter(b => b.status === "accepted");
+
+  return (
+    <div className="max-w-xl space-y-4">
+      <div className="bg-noir-card border border-white/12 rounded-3xl p-6 shadow-xl">
+        <h3 className="font-cinematic text-lg font-bold text-white mb-2">Event Chat Sessions</h3>
+        <p className="text-xs text-[#A8A1B5] mb-5">Select an accepted booking to start planning details with your planner.</p>
+
+        {activeBookings.length === 0 ? (
+          <p className="text-sm text-white/70">
+            No active chat sessions. Chat becomes available once a planner accepts your booking request.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {activeBookings.map((b) => (
+              <div key={b.id} className="flex items-center justify-between p-3.5 border border-white/10 bg-white/[0.02] rounded-xl hover:bg-white/[0.04] transition-all duration-150">
+                <div>
+                  <p className="font-bold text-sm text-white">💬 {b.planner_name}</p>
+                  <p className="text-xs text-[#A8A1B5] mt-0.5">{b.package_title || "Custom Package"}</p>
+                </div>
+                <Link
+                  to={`/chat/${b.id}`}
+                  className="btn-primary text-xs font-semibold px-4 py-2 rounded-[10px] shadow-sm hover:scale-105 active:scale-95 transition-all"
+                >
+                  Open Chat ➔
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 export default function EventWorkspacePage() {
   const { id } = useParams();
   const [event, setEvent] = useState<Event | null>(null);
@@ -1083,22 +1137,23 @@ export default function EventWorkspacePage() {
 
   return (
     <div className="space-y-8 pb-16">
-      <Link to="/dashboard" className="text-xs font-semibold text-champagne-400 hover:underline inline-block">
+      <Link to="/dashboard" className="text-xs font-semibold text-[#5B21B6] hover:underline inline-block">
         ← Back to Dashboard
       </Link>
 
-      <div className="bg-noir-card border border-white/15 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-royal-600/20 blur-3xl pointer-events-none" />
-        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-champagne-400 block mb-1">
+      <div className="bg-gradient-to-br from-[#3B176D] via-[#5B21B6] to-[#8B5CF6] text-white rounded-3xl p-8 shadow-soft relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 blur-3xl pointer-events-none" />
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-purple-200 block mb-1">
           {event.event_type.replace("_", " ")} Workspace
         </span>
         <h1 className="font-cinematic text-4xl sm:text-5xl font-bold text-white">{event.name}</h1>
-        <p className="text-sm text-[#A8A1B5] mt-2">
+        <p className="text-sm text-purple-100 mt-2">
           📅 {event.date} {event.time ? `at ${event.time}` : ""} • 📍 {event.venue || "Private Venue TBD"}
         </p>
       </div>
 
-      {/* Tabs Row */}
+      <div className="event-workspace-page space-y-8">
+        {/* Tabs Row */}
       <div className="flex gap-2 border-b border-white/12 pb-3 overflow-x-auto">
         {TABS.map((t) => (
           <button
@@ -1147,7 +1202,9 @@ export default function EventWorkspacePage() {
       {tab === "Bookings" && id && <BookingsTab eventId={id} />}
       {tab === "Budget" && id && <BudgetTab eventId={id} totalBudget={event.budget} />}
       {tab === "Timeline" && id && <TimelineTab eventId={id} />}
+      {tab === "Chat" && id && <ChatTab eventId={id} />}
       {tab === "Gallery" && id && <GalleryTab eventId={id} />}
+      </div>
     </div>
   );
 }

@@ -15,6 +15,8 @@ interface Profile {
   city: string;
   about: string;
   experience_years: number;
+  cover_image_url: string;
+  logo_url: string;
 }
 
 export default function PlannerProfilePage() {
@@ -24,6 +26,8 @@ export default function PlannerProfilePage() {
     city: "",
     about: "",
     experience_years: 0,
+    cover_image_url: "",
+    logo_url: "",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -31,9 +35,6 @@ export default function PlannerProfilePage() {
   useEffect(() => {
     const load = async () => {
       try {
-        // Always fetches THIS logged-in planner's own profile — never
-        // another planner's listing. The backend creates an empty one
-        // automatically on first visit if none exists yet.
         const { data } = await apiClient.get("/planners/me/");
         setProfile(data);
       } catch {
@@ -44,6 +45,48 @@ export default function PlannerProfilePage() {
     };
     load();
   }, []);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadToast = toast.loading("Uploading business logo...");
+    try {
+      const { data } = await apiClient.post("/planners/upload-image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setProfile((prev) => ({ ...prev, logo_url: data.url }));
+      toast.success("Logo uploaded!", { id: uploadToast });
+    } catch {
+      toast.error("Upload failed", { id: uploadToast });
+    }
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadToast = toast.loading("Uploading cover banner...");
+    try {
+      const { data } = await apiClient.post("/planners/upload-image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setProfile((prev) => ({ ...prev, cover_image_url: data.url }));
+      toast.success("Cover image uploaded!", { id: uploadToast });
+    } catch {
+      toast.error("Upload failed", { id: uploadToast });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +106,7 @@ export default function PlannerProfilePage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-2xl font-semibold mb-2">Your Planner Profile</h1>
+      <h1 className="text-2xl font-semibold mb-2 font-display">Your Planner Profile</h1>
       {profile.id && (
         <p className="text-xs text-ink-400 mb-6">Editing your profile — listing #{profile.id}</p>
       )}
@@ -106,8 +149,49 @@ export default function PlannerProfilePage() {
           value={profile.experience_years}
           onChange={(e) => setProfile({ ...profile, experience_years: Number(e.target.value) })}
         />
+
+        <div className="space-y-4 border-t pt-4">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider block">Business Logo</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="text-xs text-neutral-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 cursor-pointer"
+              />
+              {profile.logo_url && (
+                <img
+                  src={profile.logo_url}
+                  alt="Logo preview"
+                  className="w-10 h-10 object-cover rounded-full border shrink-0"
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider block">Cover Banner Photo</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleCoverUpload}
+                className="text-xs text-neutral-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 cursor-pointer"
+              />
+              {profile.cover_image_url && (
+                <img
+                  src={profile.cover_image_url}
+                  alt="Cover preview"
+                  className="w-16 h-10 object-cover rounded-lg border shrink-0"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
         <button
-          className="btn-primary"
+          className="btn-primary mt-4"
           type="submit"
           disabled={saving}
         >

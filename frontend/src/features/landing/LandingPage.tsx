@@ -107,7 +107,7 @@ export default function LandingPage() {
           >
             <div className="relative rounded-[2rem] overflow-hidden border border-[#E9E4F5] bg-white shadow-[0_4px_20px_rgba(91,33,182,0.08)] aspect-[4/3]">
               <motion.div style={{ scale: sceneScale }} className="w-full h-full">
-                <CelebrationScene variant={activeId} className="w-full h-full" />
+                <CelebrationScene variant={activeId} className="w-full h-full" decorated={false} />
               </motion.div>
             </div>
 
@@ -156,7 +156,7 @@ export default function LandingPage() {
               transition={{ duration: 0.45 }}
               className="relative rounded-[16px] overflow-hidden border border-[#E9E4F5] bg-white shadow-md aspect-[4/3]"
             >
-              <CelebrationScene variant={current.id} className="w-full h-full" />
+              <CelebrationScene variant={current.id} className="w-full h-full" decorated={false} />
               <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-[#3B176D] via-[#3B176D]/80 to-transparent text-white">
                 <span className="text-4xl">{current.emoji}</span>
                 <h3 className="font-display text-3xl font-bold mt-2 text-white">{current.title}</h3>
@@ -323,8 +323,6 @@ function LandingFooter() {
           <Link to="/" className="inline-block">
             <img src="/images/celebro_logo.png" alt="Celebro" className="h-24 sm:h-28 w-auto object-contain" />
           </Link>
-
-
           <p className="text-sm text-[#6B6780] mt-3 max-w-xs leading-relaxed font-medium">
             Plan. Connect. Celebrate. The ultimate luxury marketplace connecting dreamers with master event specialists.
           </p>
@@ -365,7 +363,3 @@ function LandingFooter() {
     </footer>
   );
 }
-
-
-
-
