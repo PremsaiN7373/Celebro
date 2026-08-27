@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { apiClient } from "@/lib/api-client";
 
 interface PaymentTransaction {
   id: number;
-  booking_id: number;
-  planner_name: string;
+  booking: number;
+  planner_name?: string;
+  event_name?: string;
   amount: string;
-  payment_status: "captured" | "created" | "failed";
-  razorpay_payment_id: string;
+  status: "paid" | "created" | "failed" | "refunded";
+  payment_status?: string;
+  razorpay_payment_id?: string;
+  razorpay_order_id?: string;
   created_at: string;
 }
 
@@ -21,34 +25,25 @@ export default function PaymentsPage() {
         const { data } = await apiClient.get("/payments/");
         setTransactions(data.results ?? data);
       } catch {
-        // Fallback sample data if endpoint empty
+        // Fallback sample data if endpoint unreachable
         setTransactions([
           {
             id: 101,
-            booking_id: 12,
+            booking: 12,
             planner_name: "The Wedding Atelier",
             amount: "45000",
-            payment_status: "captured",
+            status: "paid",
             razorpay_payment_id: "pay_N7xK92mZ1aL",
             created_at: "2026-05-10T14:30:00Z",
           },
           {
             id: 102,
-            booking_id: 15,
+            booking: 15,
             planner_name: "Royal Event Curators",
             amount: "25000",
-            payment_status: "captured",
+            status: "paid",
             razorpay_payment_id: "pay_K8yP14bX9wQ",
             created_at: "2026-05-02T11:15:00Z",
-          },
-          {
-            id: 103,
-            booking_id: 18,
-            planner_name: "Lumina Lighting & Decor",
-            amount: "15000",
-            payment_status: "captured",
-            razorpay_payment_id: "pay_M3vC88zL2pT",
-            created_at: "2026-04-20T16:45:00Z",
           },
         ]);
       } finally {
@@ -58,12 +53,30 @@ export default function PaymentsPage() {
     fetchPayments();
   }, []);
 
+  const downloadInvoice = async (id: number) => {
+    try {
+      const response = await apiClient.get(`/payments/${id}/invoice/`, {
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `celebro-invoice-${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success("Invoice downloaded!");
+    } catch {
+      toast.error("Could not download invoice");
+    }
+  };
+
   const totalPaid = transactions
-    .filter((t) => t.payment_status === "captured")
+    .filter((t) => t.status === "paid" || t.payment_status === "captured")
     .reduce((sum, t) => sum + Number(t.amount || 0), 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-16">
       {/* Header */}
       <div>
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#17142A]">
@@ -120,39 +133,61 @@ export default function PaymentsPage() {
                 <th className="px-6 py-4">Date</th>
                 <th className="px-6 py-4">Amount</th>
                 <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4 text-right">Invoice</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E9E4F5] text-[#17142A]">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-[#6B6780]">Loading payment records...</td>
+                  <td colSpan={6} className="px-6 py-8 text-center text-[#6B6780]">Loading payment records...</td>
                 </tr>
               ) : transactions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-[#6B6780]">No payments recorded yet.</td>
+                  <td colSpan={6} className="px-6 py-8 text-center text-[#6B6780]">No payments recorded yet.</td>
                 </tr>
               ) : (
-                transactions.map((t) => (
-                  <tr key={t.id} className="hover:bg-[#FCFAFF] transition-colors">
-                    <td className="px-6 py-4 font-mono font-bold text-[#5B21B6]">
-                      {t.razorpay_payment_id || `PAY-${t.id}`}
-                    </td>
-                    <td className="px-6 py-4 font-bold">{t.planner_name || "Event Service"}</td>
-                    <td className="px-6 py-4 text-[#6B6780] font-medium">
-                      {new Date(t.created_at).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="px-6 py-4 font-bold text-base">₹{Number(t.amount).toLocaleString()}</td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#3A8D68]/10 text-[#3A8D68] border border-[#3A8D68]/20 uppercase">
-                        ✓ {t.payment_status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                transactions.map((t) => {
+                  const isPaid = t.status === "paid" || t.payment_status === "captured";
+                  return (
+                    <tr key={t.id} className="hover:bg-[#FCFAFF] transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-[#5B21B6]">
+                        {t.razorpay_payment_id || `PAY-${t.id}`}
+                      </td>
+                      <td className="px-6 py-4 font-bold">{t.planner_name || t.event_name || "Celebration Booking"}</td>
+                      <td className="px-6 py-4 text-[#6B6780] font-medium">
+                        {new Date(t.created_at).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
+                      <td className="px-6 py-4 font-bold text-base">₹{Number(t.amount).toLocaleString()}</td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
+                            isPaid
+                              ? "bg-[#3A8D68]/10 text-[#3A8D68] border border-[#3A8D68]/20"
+                              : t.status === "refunded"
+                              ? "bg-amber-500/10 text-amber-600 border border-amber-500/20"
+                              : "bg-rose-500/10 text-rose-600 border border-rose-500/20"
+                          }`}
+                        >
+                          {isPaid ? "✓ Paid" : t.status || "Pending"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        {isPaid && (
+                          <button
+                            onClick={() => downloadInvoice(t.id)}
+                            className="btn-secondary text-[11px] px-3 py-1.5 font-bold"
+                          >
+                            ⬇ PDF
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

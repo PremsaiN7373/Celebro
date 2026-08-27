@@ -5,9 +5,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["'Inter'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
-        display: ["'Playfair Display'", "serif"],
-        cinematic: ["'Playfair Display'", "serif"],
+        sans: ["'Manrope'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        display: ["'Manrope'", "sans-serif"],
+        cinematic: ["'Manrope'", "sans-serif"],
       },
       colors: {
         // Celebro Lavender Premium Palette

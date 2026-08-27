@@ -1,11 +1,12 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { STEPS, type StepItem } from "./data";
+import { getStepsCMS, type StepItem } from "./data";
 
 export default function TimelineSection() {
   const reduce = !!useReducedMotion();
+  const steps = getStepsCMS();
 
   return (
-    <section id="how" className="py-24 relative overflow-hidden">
+    <section id="how" className="py-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.p
@@ -39,7 +40,7 @@ export default function TimelineSection() {
           {/* Connector Line for Desktop */}
           <div className="hidden md:block absolute top-12 left-10 right-10 h-0.5 bg-[#5B21B6] opacity-20 z-0" />
 
-          {STEPS.map((step: StepItem, idx: number) => (
+          {steps.map((step: StepItem, idx: number) => (
             <motion.div
               key={step.n}
               initial={{ opacity: 0, y: reduce ? 0 : 30 }}

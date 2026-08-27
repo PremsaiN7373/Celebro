@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 interface GuestItem {
@@ -19,10 +20,15 @@ const INITIAL_GUESTS: GuestItem[] = [
 ];
 
 export default function GuestsPage() {
+  const [searchParams] = useSearchParams();
   const [guests, setGuests] = useState<GuestItem[]>(INITIAL_GUESTS);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filterGroup, setFilterGroup] = useState("");
   const [filterRsvp, setFilterRsvp] = useState("");
+
+  useEffect(() => {
+    setSearch(searchParams.get("search") || "");
+  }, [searchParams]);
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [group, setGroup] = useState("Family");

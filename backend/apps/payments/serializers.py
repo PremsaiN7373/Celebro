@@ -3,10 +3,13 @@ from .models import Payment, PaymentDispute
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    planner_name = serializers.CharField(source="booking.planner.business_name", read_only=True)
+    event_name = serializers.CharField(source="booking.event.name", read_only=True)
+
     class Meta:
         model = Payment
         fields = [
-            "id", "booking", "amount", "razorpay_order_id",
+            "id", "booking", "planner_name", "event_name", "amount", "razorpay_order_id",
             "razorpay_payment_id", "status", "created_at",
         ]
         read_only_fields = fields

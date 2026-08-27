@@ -43,7 +43,7 @@ export default function VideoStorySection() {
   const embedUrl = formatYoutubeEmbedUrl(videoConfig.url);
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="relative rounded-[16px] overflow-hidden border border-[#E9E4F5] aspect-[21/9] min-h-[360px] shadow-md group grid place-items-center">
           {/* Background Cover */}

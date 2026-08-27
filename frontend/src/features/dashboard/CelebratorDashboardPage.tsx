@@ -232,11 +232,11 @@ export default function CelebratorDashboardPage() {
                         )}
                       </div>
                       <p className="text-sm font-bold text-txtprimary group-hover:text-[#5B21B6] transition-colors mt-2 truncate">
-                        {p.business_name}
+                        {p.business_name || "Unnamed Planner"}
                       </p>
                     </div>
                     <div className="flex items-center justify-between text-xs text-txtsecondary mt-3 border-t border-softborder/40 pt-2 font-medium">
-                      <span>📍 {p.city}</span>
+                      <span>📍 {p.city || "Location unspecified"}</span>
                       <span className="text-[#5B21B6] font-semibold text-[11px] group-hover:underline">View Portfolio →</span>
                     </div>
                   </Link>
@@ -268,10 +268,10 @@ export default function CelebratorDashboardPage() {
                       className="flex items-center justify-between p-2.5 border border-softborder hover:border-[#5B21B6]/30 hover:bg-[#F5F3FF]/20 rounded-xl transition-all"
                     >
                       <span className="text-xs text-txtprimary font-bold truncate">
-                        {s.planner.business_name}
+                        {s.planner.business_name || "Unnamed Planner"}
                       </span>
                       <span className="text-[11px] font-semibold text-txtsecondary bg-white px-2 py-0.5 rounded-md border border-softborder shrink-0 ml-2">
-                        📍 {s.planner.city}
+                        📍 {s.planner.city || "Location unspecified"}
                       </span>
                     </Link>
                   ))}

@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import LandingNav from "../LandingNav";
+import LandingFooter from "../LandingFooter";
 import { IconArrowRight } from "../icons";
 import { getExperiencesCatalogCMS, DetailedExperience, CATEGORIES } from "../data";
 
@@ -60,11 +61,16 @@ export default function ExperiencesPage() {
   const [occasionFilter, setOccasionFilter] = useState("all");
 
   // Experiences List State
+  const [searchParams] = useSearchParams();
   const experiences = getExperiencesCatalogCMS();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [cityFilter, setCityFilter] = useState("all");
   const [activeId, setActiveId] = useState(experiences[0]?.id || "");
   const [selectedExp, setSelectedExp] = useState<DetailedExperience | null>(null);
+
+  useEffect(() => {
+    setSearch(searchParams.get("search") || "");
+  }, [searchParams]);
 
   // Filters for Occasions (Celebrations)
   const filteredCategories = CATEGORIES.filter((cat) => {
@@ -563,9 +569,7 @@ export default function ExperiencesPage() {
       )}
 
       {/* Footer */}
-      <footer className="bg-white border-t border-[#E9E4F5] py-8 text-center text-xs text-[#6B6780] font-medium">
-        © {new Date().getFullYear()} Celebro Inc. All rights reserved. • Plan. Connect. Celebrate.
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

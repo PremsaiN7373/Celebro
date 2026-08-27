@@ -5,7 +5,7 @@ export default function StatsSection() {
   const reduce = !!useReducedMotion();
 
   return (
-    <section className="py-20 relative overflow-hidden border-y border-[#E9E4F5] bg-white shadow-xs">
+    <section className="py-12 relative overflow-hidden border-y border-[#E9E4F5] bg-white shadow-xs">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-y md:divide-y-0 md:divide-x divide-[#E9E4F5]">
           {STATS.map((stat: StatItem, idx: number) => (

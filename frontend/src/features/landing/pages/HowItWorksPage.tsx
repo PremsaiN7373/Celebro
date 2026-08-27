@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import LandingNav from "../LandingNav";
+import LandingFooter from "../LandingFooter";
 import TimelineSection from "../TimelineSection";
-import { STEPS } from "../data";
+import { getStepsCMS } from "../data";
 
 export default function HowItWorksPage() {
+  const steps = getStepsCMS();
   return (
     <div className="min-h-screen bg-[#FCFAFF] text-[#17142A] font-sans">
       <LandingNav />
@@ -52,7 +54,7 @@ export default function HowItWorksPage() {
           </div>
 
           <div className="space-y-12">
-            {STEPS.map((step: any, idx: number) => (
+            {steps.map((step: any, idx: number) => (
 
               <motion.div
                 key={step.n}
@@ -97,9 +99,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-[#E9E4F5] py-8 text-center text-xs text-[#6B6780] font-medium">
-        © {new Date().getFullYear()} Celebro Inc. All rights reserved. • Plan. Connect. Celebrate.
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

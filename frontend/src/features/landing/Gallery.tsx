@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { GALLERY_ITEMS, type GalleryItem } from "./data";
+import { getGalleryItemsCMS, type GalleryItem } from "./data";
 import { IconClose, IconArrowRight } from "./icons";
 
 const CATEGORY_TABS = [
@@ -18,23 +18,24 @@ export default function Gallery() {
   const [activeTab, setActiveTab] = useState("all");
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
+  const galleryItems = getGalleryItemsCMS();
   const filteredItems =
     activeTab === "all"
-      ? GALLERY_ITEMS
-      : GALLERY_ITEMS.filter((item: GalleryItem) => item.category === activeTab);
+      ? galleryItems
+      : galleryItems.filter((item: GalleryItem) => item.category === activeTab);
 
   return (
     <>
       {/* Category Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+      <div className="flex flex-wrap items-center justify-center gap-2.5 mb-14">
         {CATEGORY_TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-5 py-2.5 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
+            className={`px-6 py-3 rounded-full text-xs font-extrabold tracking-wider uppercase active:scale-95 transition-all duration-300 ${
               activeTab === tab.id
-                ? "bg-[#5B21B6] text-white shadow-xs"
-                : "bg-white border border-[#E9E4F5] text-[#17142A] hover:bg-[#F5F3FF]"
+                ? "bg-gradient-to-r from-[#5B21B6] to-[#7C3AED] text-white shadow-lg shadow-purple-600/15 border-transparent"
+                : "bg-white border border-[#E9E4F5] text-[#6B6780] hover:text-[#5B21B6] hover:border-[#8B5CF6]/30 hover:bg-[#FCFAFF]"
             }`}
           >
             {tab.label}
@@ -42,8 +43,17 @@ export default function Gallery() {
         ))}
       </div>
 
-      {/* Masonry Grid */}
-      <motion.div layout className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
+      {/* Dynamic Grid Layout */}
+      <motion.div 
+        layout 
+        className={
+          filteredItems.length === 1 
+            ? "flex justify-center w-full" 
+            : filteredItems.length === 2 
+            ? "grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto w-full" 
+            : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+        }
+      >
         <AnimatePresence>
           {filteredItems.map((item: GalleryItem, idx: number) => (
             <motion.div
@@ -54,22 +64,34 @@ export default function Gallery() {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
               onClick={() => setLightboxItem(item)}
-              className="group relative mb-6 rounded-[16px] overflow-hidden border border-[#E9E4F5] bg-white break-inside-avoid cursor-pointer shadow-xs hover:shadow-lg transition-all"
+              className="group relative mb-6 w-full max-w-md rounded-[24px] overflow-hidden border border-[#E9E4F5] bg-white cursor-pointer shadow-[0_4px_25px_rgba(91,33,182,0.02)] hover:shadow-[0_20px_45px_rgba(91,33,182,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
             >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+              {/* Photo Frame Container */}
+              <div className="aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-[#8B5CF6]/5 to-[#5B21B6]/10 relative">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-[#3B176D]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              </div>
 
-              <div className="absolute bottom-0 inset-x-0 p-6 flex flex-col justify-end">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#EDE9FE] mb-1">
-                  {item.category}
-                </span>
-                <h3 className="font-display text-xl font-bold text-white group-hover:text-[#EDE9FE] transition-colors">
-                  {item.title}
-                </h3>
+              {/* Editorial Card Footer */}
+              <div className="p-6 bg-white flex flex-col text-left border-t border-[#F5F3FF] relative z-10 flex-1 justify-between">
+                <div>
+                  <span className="text-[9px] font-extrabold uppercase tracking-[0.2em] text-[#8B5CF6] mb-1.5 block">
+                    {item.category}
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-[#17142A] group-hover:text-[#5B21B6] transition-colors leading-snug line-clamp-1">
+                    {item.title}
+                  </h3>
+                </div>
+                <div className="mt-4 pt-3 border-t border-[#F5F3FF] flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-[#6B6780] uppercase tracking-wider">Event Details</span>
+                  <span className="text-xs font-bold text-[#5B21B6] flex items-center gap-1 group-hover:translate-x-1.5 transition-transform duration-300">
+                    View Photo <span className="text-xs">→</span>
+                  </span>
+                </div>
               </div>
             </motion.div>
           ))}

@@ -143,10 +143,10 @@ export default function ComparePage() {
           {planners.map((p) => (
             <div key={p.id} className="bg-white border border-[#E9E4F5] rounded-[16px] p-5 text-center shadow-[0_4px_20px_rgba(91,33,182,0.06)]">
               <div className="flex justify-center mb-2">
-                <Avatar name={p.business_name} />
+                <Avatar name={p.business_name || "Unnamed Planner"} />
               </div>
               <div className="flex items-center justify-center gap-1.5">
-                <h2 className="font-display text-lg font-bold text-[#17142A]">{p.business_name}</h2>
+                <h2 className="font-display text-lg font-bold text-[#17142A]">{p.business_name || "Unnamed Planner"}</h2>
                 {p.is_verified && <span className="text-xs">✅</span>}
               </div>
               <p className="text-xs text-[#5B21B6] font-bold capitalize mt-0.5">
@@ -183,7 +183,7 @@ export default function ComparePage() {
           </div>
           {planners.map((p) => (
             <div key={p.id} className="flex items-center justify-center py-2 text-sm border-t border-ink-100 dark:border-ink-700">
-              {p.city}
+              {p.city || "Location unspecified"}
             </div>
           ))}
 

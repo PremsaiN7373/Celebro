@@ -89,32 +89,37 @@ export default function PlannerDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-[16px] mb-6 p-8 bg-[#3B176D] text-white shadow-md"
+        className="relative overflow-hidden rounded-[16px] mb-6 p-8 bg-gradient-to-br from-[#3B176D] via-[#5B21B6] to-[#8B5CF6] text-white shadow-soft"
       >
+        {/* decorative glassmorphic rings/blobs */}
+        <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full bg-white/10 blur-2xl z-0" />
+        <div className="absolute -bottom-16 -left-8 w-48 h-48 rounded-full bg-white/10 blur-2xl z-0" />
+        <div className="absolute top-6 right-10 text-5xl opacity-90 animate-bounce duration-1000 z-0">💼</div>
+        <div className="absolute bottom-6 right-32 text-3xl opacity-75 -rotate-12 z-0">✨</div>
+
         <div className="absolute inset-0 z-0">
           <img
             src="/images/proposal_hero.png"
             alt="Planner Atmosphere"
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-15 mix-blend-overlay"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#3B176D] via-[#3B176D]/90 to-transparent" />
         </div>
 
         <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <p className="text-xs uppercase tracking-widest text-[#EDE9FE] font-bold">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-purple-200 font-bold">
               Planner Master Workspace
             </p>
             <h1 className="font-display font-bold text-3xl sm:text-4xl mt-1 text-white">
               Welcome back, {user?.username || "Master Planner"}
             </h1>
-            <p className="text-sm text-[#EDE9FE]/90 mt-1 font-medium">
+            <p className="text-sm text-purple-100 mt-2 font-medium">
               Here's what's happening with your celebration bookings today.
             </p>
           </div>
           <Link
             to="/planner-packages"
-            className="btn-primary text-xs px-5 py-2.5 shadow-xs"
+            className="btn-primary text-xs font-semibold px-5 py-2.5 rounded-[10px] bg-white text-purple-700 hover:bg-purple-50 transition-all shadow-md hover:scale-105 active:scale-95 shrink-0"
           >
             Manage Packages
           </Link>
@@ -123,10 +128,10 @@ export default function PlannerDashboardPage() {
 
       {/* Business stats — planner-specific metrics, not shown to celebrators */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <StatCard label="Total Bookings" value={bookings.length} />
-        <StatCard label="Pending Enquiries" value={pending.length} accent color="biz" />
-        <StatCard label="Revenue (Advance)" value={`₹${totalRevenue.toLocaleString()}`} />
-        <StatCard label="Completed" value={completed.length} />
+        <StatCard label="Total Bookings" value={bookings.length} color="purple" />
+        <StatCard label="Pending Enquiries" value={pending.length} color="pink" />
+        <StatCard label="Revenue (Advance)" value={`₹${totalRevenue.toLocaleString()}`} color="emerald" />
+        <StatCard label="Completed" value={completed.length} color="purple" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -134,30 +139,30 @@ export default function PlannerDashboardPage() {
         <div className="lg:col-span-2 space-y-5">
           <WidgetCard
             title="Booking Requests"
-            action={<Link to="/planner-bookings" className="text-xs text-biz-600 dark:text-biz-400 underline">View all</Link>}
+            action={<Link to="/planner-bookings" className="text-xs text-[#5B21B6] font-bold hover:underline">View all</Link>}
           >
             {pending.length === 0 ? (
               <EmptyState message="No pending requests" hint="New booking requests will show up here." />
             ) : (
-              <div className="divide-y divide-ink-100 dark:divide-ink-700">
+              <div className="space-y-3">
                 {pending.slice(0, 4).map((b) => (
-                  <div key={b.id} className="flex items-center justify-between py-2.5">
+                  <div key={b.id} className="flex items-center justify-between p-3.5 border border-softborder rounded-xl hover:bg-[#F5F3FF]/20 transition-all duration-150">
                     <div>
-                      <p className="text-sm font-medium text-ink-800 dark:text-ink-100">{b.event_name}</p>
-                      <p className="text-xs text-ink-400">{b.package_title || "Package TBD"}</p>
+                      <p className="font-bold text-sm text-txtprimary">{b.event_name}</p>
+                      <p className="text-xs text-txtsecondary mt-0.5 font-medium">{b.package_title || "Package TBD"}</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 shrink-0">
                       <button
                         disabled={actingOn === b.id}
                         onClick={() => respond(b.id, "accept")}
-                        className="text-xs bg-biz-600 hover:bg-biz-700 text-white rounded-lg px-2.5 py-1 transition-colors"
+                        className="text-xs bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg px-3 py-1.5 hover:scale-105 active:scale-95 transition-all shadow-xs"
                       >
                         Accept
                       </button>
                       <button
                         disabled={actingOn === b.id}
                         onClick={() => respond(b.id, "reject")}
-                        className="text-xs border border-ink-200 dark:border-ink-600 rounded-lg px-2.5 py-1"
+                        className="text-xs border border-softborder dark:border-ink-600 text-ink-600 dark:text-ink-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200 rounded-lg px-3 py-1.5 transition-all"
                       >
                         Decline
                       </button>
@@ -170,23 +175,27 @@ export default function PlannerDashboardPage() {
 
           <WidgetCard
             title="Client Messages"
-            action={<span className="text-xs text-ink-400">{accepted.length} active</span>}
+            action={
+              <span className="text-xs text-[#5B21B6] font-semibold bg-[#F5F3FF] border border-purple-100 px-2 py-0.5 rounded-full">
+                {accepted.length} active
+              </span>
+            }
           >
             {accepted.length === 0 ? (
               <EmptyState message="No active conversations" hint="Accepted bookings unlock chat with the client." />
             ) : (
-              <div className="divide-y divide-ink-100 dark:divide-ink-700">
+              <div className="space-y-3">
                 {accepted.slice(0, 4).map((b) => (
                   <Link
                     key={b.id}
                     to={`/chat/${b.id}`}
-                    className="flex items-center justify-between py-2.5 hover:opacity-70"
+                    className="group flex items-center justify-between p-3.5 border border-softborder rounded-xl hover:bg-[#F5F3FF]/20 hover:border-[#5B21B6]/30 transition-all duration-150"
                   >
                     <div>
-                      <p className="text-sm font-medium text-ink-800 dark:text-ink-100">{b.event_name}</p>
-                      <p className="text-xs text-ink-400">{b.package_title || "Package TBD"}</p>
+                      <p className="font-bold text-sm text-txtprimary group-hover:text-[#5B21B6] transition-colors">{b.event_name}</p>
+                      <p className="text-xs text-txtsecondary mt-0.5 font-medium">{b.package_title || "Package TBD"}</p>
                     </div>
-                    <span className="text-xs text-biz-600 dark:text-biz-400 font-medium">Open chat →</span>
+                    <span className="text-xs text-[#5B21B6] font-bold group-hover:translate-x-0.5 transition-transform">Open chat →</span>
                   </Link>
                 ))}
               </div>
@@ -194,7 +203,7 @@ export default function PlannerDashboardPage() {
           </WidgetCard>
 
           <WidgetCard title="Analytics — Bookings by Status">
-            <MiniBarChart data={statusChart} color="#4a63ec" />
+            <MiniBarChart data={statusChart} color="#8B5CF6" />
           </WidgetCard>
 
           <div className="grid grid-cols-2 gap-5">
@@ -211,7 +220,7 @@ export default function PlannerDashboardPage() {
         <div className="space-y-5">
           <WidgetCard
             title="Calendar"
-            action={<Link to="/planner-availability" className="text-xs text-biz-600 dark:text-biz-400 underline">Manage</Link>}
+            action={<Link to="/planner-availability" className="text-xs text-[#5B21B6] font-bold hover:underline">Manage</Link>}
           >
             <MiniCalendar highlightDates={[]} blockedDates={blockedDates} />
           </WidgetCard>

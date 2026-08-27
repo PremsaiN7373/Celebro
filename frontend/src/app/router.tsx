@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, ScrollRestoration } from "react-router-dom";
 
 import AppLayout from "../layouts/AppLayout";
 import LandingPage from "../features/landing/LandingPage";
@@ -33,57 +33,68 @@ import ProtectedRoute from "./ProtectedRoute";
 
 
 export const router = createBrowserRouter([
-  { path: "/", element: <LandingPage /> },
-  { path: "/landing", element: <LandingPage /> },
-  { path: "/celebrations", element: <Navigate to="/experiences" replace /> },
-  { path: "/experiences", element: <ExperiencesPage /> },
-  { path: "/how-it-works", element: <HowItWorksPage /> },
-  { path: "/lookbook", element: <LookbookPage /> },
-  { path: "/login", element: <LoginPage /> },
-  { path: "/register", element: <RegisterPage /> },
-  { path: "/invite/:uuid", element: <PublicInvitePage /> },
+  {
+    element: (
+      <>
+        <ScrollRestoration />
+        <Outlet />
+      </>
+    ),
+    children: [
+      { path: "/", element: <LandingPage /> },
+      { path: "/landing", element: <LandingPage /> },
+      { path: "/celebrations", element: <Navigate to="/experiences" replace /> },
+      { path: "/experiences", element: <ExperiencesPage /> },
+      { path: "/how-it-works", element: <HowItWorksPage /> },
+      { path: "/lookbook", element: <LookbookPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/register", element: <RegisterPage /> },
+      { path: "/invite/:uuid", element: <PublicInvitePage /> },
 
-  {
-    path: "/app",
-    element: (
-      <ProtectedRoute>
-        <AppLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <Navigate to="/dashboard" replace /> },
-      { path: "dashboard", element: <DashboardRouter /> },
-    ],
-  },
-  {
-    element: (
-      <ProtectedRoute>
-        <AppLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { path: "dashboard", element: <DashboardRouter /> },
-      { path: "my-celebrations", element: <CelebratorDashboardPage /> },
-      { path: "settings", element: <SettingsPage /> },
-      { path: "referrals", element: <ReferralsPage /> },
-      { path: "account", element: <AccountPage /> },
-      { path: "events/create", element: <CreateEventPage /> },
-      { path: "events/:id", element: <EventWorkspacePage /> },
-      { path: "marketplace", element: <MarketplacePage /> },
-      { path: "compare", element: <ComparePage /> },
-      { path: "planner-profile", element: <PlannerProfilePage /> },
-      { path: "planner-packages", element: <PlannerPackagesPage /> },
-      { path: "planner-availability", element: <PlannerAvailabilityPage /> },
-      { path: "planner-portfolio", element: <PlannerPortfolioPage /> },
-      { path: "planner-earnings", element: <PlannerEarningsPage /> },
-      { path: "planner-bookings", element: <PlannerBookingsPage /> },
-      { path: "planners/:id", element: <PlannerDetailPage /> },
-      { path: "bookings", element: <BookingsPage /> },
-      { path: "guests", element: <GuestsPage /> },
-      { path: "chat/:bookingId", element: <ChatPage /> },
-      { path: "payments", element: <PaymentsPage /> },
-      { path: "admin", element: <AdminPage /> },
+      {
+        path: "/app",
+        element: (
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <Navigate to="/dashboard" replace /> },
+          { path: "dashboard", element: <DashboardRouter /> },
+        ],
+      },
+      {
+        element: (
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          { path: "dashboard", element: <DashboardRouter /> },
+          { path: "my-celebrations", element: <CelebratorDashboardPage /> },
+          { path: "settings", element: <Navigate to="/account" replace /> },
+          { path: "referrals", element: <ReferralsPage /> },
+          { path: "account", element: <AccountPage /> },
+          { path: "events/create", element: <CreateEventPage /> },
+          { path: "events/:id", element: <EventWorkspacePage /> },
+          { path: "marketplace", element: <MarketplacePage /> },
+          { path: "compare", element: <ComparePage /> },
+          { path: "planner-profile", element: <PlannerProfilePage /> },
+          { path: "planner-packages", element: <PlannerPackagesPage /> },
+          { path: "planner-availability", element: <PlannerAvailabilityPage /> },
+          { path: "planner-portfolio", element: <PlannerPortfolioPage /> },
+          { path: "planner-earnings", element: <PlannerEarningsPage /> },
+          { path: "planner-bookings", element: <PlannerBookingsPage /> },
+          { path: "planners/:id", element: <PlannerDetailPage /> },
+          { path: "bookings", element: <BookingsPage /> },
+          { path: "guests", element: <GuestsPage /> },
+          { path: "chat/:bookingId", element: <ChatPage /> },
+          { path: "payments", element: <PaymentsPage /> },
+          { path: "admin", element: <AdminPage /> },
+        ],
+      },
     ],
   },
 ]);
+
 

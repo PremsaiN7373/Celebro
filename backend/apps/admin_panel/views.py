@@ -22,6 +22,13 @@ class AdminUserListView(generics.ListAPIView):
     queryset = User.objects.all().order_by("-date_joined")
 
 
+class AdminUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """GET / PUT / PATCH / DELETE /api/v1/admin-panel/users/<id>/ — retrieve, update, or delete a user."""
+    serializer_class = AdminUserSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminRole]
+    queryset = User.objects.all()
+
+
 class AdminToggleUserActiveView(APIView):
     """POST /api/v1/admin-panel/users/<id>/toggle-active/ — suspend/reactivate a user."""
     permission_classes = [permissions.IsAuthenticated, IsAdminRole]

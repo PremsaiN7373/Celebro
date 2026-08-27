@@ -3,6 +3,15 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { apiClient } from "@/lib/api-client";
 
+interface Package {
+  id: number;
+  title: string;
+  description: string;
+  price: string;
+  image_url: string;
+  created_at: string;
+}
+
 interface Planner {
   id: number;
   business_name: string;
@@ -14,6 +23,8 @@ interface Planner {
   is_featured: boolean;
   is_saved: boolean;
   avg_response_hours: number | null;
+  cover_image_url?: string;
+  packages?: Package[];
 }
 
 const MAX_COMPARE = 3;
@@ -35,8 +46,9 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 export default function MarketplacePage() {
+  const [searchParams] = useSearchParams();
   const [planners, setPlanners] = useState<Planner[]>([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [minRating, setMinRating] = useState("");
@@ -44,9 +56,12 @@ export default function MarketplacePage() {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [compareIds, setCompareIds] = useState<number[]>([]);
-  const [searchParams] = useSearchParams();
   const eventId = searchParams.get("event");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setSearch(searchParams.get("search") || "");
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchPlanners = async () => {
@@ -248,7 +263,7 @@ export default function MarketplacePage() {
                       {p.business_name || "The Wedding Atelier"}
                     </h2>
                     <p className="text-xs text-[#5B21B6] font-bold mt-1 uppercase tracking-wider">
-                      {CATEGORY_ICONS[p.category] || "🌸"} {p.category?.replace(/_/g, " ") || "Wedding"} • Decoration • Catering
+                      {CATEGORY_ICONS[p.category] || "🌸"} {p.category?.replace(/_/g, " ") || "Wedding"}
                     </p>
                     <p className="text-xs text-[#6B6780] mt-2 line-clamp-2 leading-relaxed font-medium">
                       {p.about || "Experienced event specialist creating memorable luxury celebrations."}
@@ -257,7 +272,13 @@ export default function MarketplacePage() {
 
                   <div className="mt-4 pt-4 border-t border-[#E9E4F5]">
                     <p className="text-xs text-[#6B6780] font-medium">
-                      Packages from <span className="text-base font-bold text-[#17142A]">₹75,000</span>
+                      {p.packages && p.packages.length > 0 ? (
+                        <>
+                          Packages from <span className="text-base font-bold text-[#17142A]">₹{Math.min(...p.packages.map((pkg) => Number(pkg.price))).toLocaleString()}</span>
+                        </>
+                      ) : (
+                        <span className="text-xs text-[#6B6780] font-bold">Pricing upon request</span>
+                      )}
                     </p>
 
                     <div className="mt-3 flex items-center gap-2">

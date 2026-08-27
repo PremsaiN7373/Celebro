@@ -38,6 +38,7 @@ interface Planner {
   packages: Package[];
   portfolio_photos: PortfolioPhoto[];
   whatsapp_number: string | null;
+  cover_image_url?: string;
 }
 
 interface EventOption {
@@ -148,7 +149,7 @@ export default function PlannerDetailPage() {
       <div className="relative rounded-[16px] overflow-hidden bg-[#3B176D] border border-[#E9E4F5] p-8 text-white shadow-md">
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/wedding_hero.png"
+            src={planner.cover_image_url || "/images/wedding_hero.png"}
             alt={planner.business_name}
             className="w-full h-full object-cover opacity-25"
           />
@@ -170,7 +171,13 @@ export default function PlannerDetailPage() {
               <p className="text-sm text-[#EDE9FE] font-medium capitalize mt-1">
                 🌸 {planner.category.replace("_", " ")} • 📍 {planner.city} • {planner.experience_years} Years Experience
               </p>
-              <p className="text-xs text-[#EDE9FE]/80 mt-1 font-bold">★ 4.9 Rating • 124 Verified Reviews</p>
+              {reviews.length > 0 ? (
+                <p className="text-xs text-[#EDE9FE]/80 mt-1 font-bold">
+                  ★ {(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)} Rating • {reviews.length} Verified {reviews.length === 1 ? "Review" : "Reviews"}
+                </p>
+              ) : (
+                <p className="text-xs text-[#EDE9FE]/80 mt-1 font-bold">★ Verified Certified Planner</p>
+              )}
             </div>
           </div>
 

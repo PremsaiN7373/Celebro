@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-
 import LoadingScreen from "./LoadingScreen";
 import LandingNav from "./LandingNav";
+import LandingFooter from "./LandingFooter";
 import CinematicBackground from "./CinematicBackground";
 import CelebrationScene from "./CelebrationScene";
 import SearchPanel from "./SearchPanel";
@@ -77,12 +77,12 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: reduce ? 0 : 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-9"
+              className="mt-9 relative z-30"
             >
               <SearchPanel activeId={activeId} onActiveChange={setActiveId} />
             </motion.div>
 
-            <div className="flex flex-wrap gap-3 mt-8">
+            <div className="flex flex-wrap gap-3 mt-8 relative z-10">
               {HERO_CHIPS.map((label, i) => (
                 <motion.div
                   key={label}
@@ -136,7 +136,7 @@ export default function LandingPage() {
       <StatsSection />
 
       {/* ======================= CATEGORY SHOWCASE ======================= */}
-      <section id="celebrations" className="relative py-28">
+      <section id="celebrations" className="relative pt-12 pb-20">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
             <p className="text-xs uppercase tracking-[0.25em] text-[#5B21B6] font-bold mb-2">
@@ -186,12 +186,12 @@ export default function LandingPage() {
       </section>
 
       {/* ======================= EXPERIENCES SLIDER ======================= */}
-      <section id="experiences" className="relative py-28 bg-white border-y border-[#E9E4F5]">
+      <section id="experiences" className="relative py-12 bg-white border-y border-[#E9E4F5]">
         <ExperienceSlider />
       </section>
 
       {/* ========================= BEFORE / AFTER ========================= */}
-      <section className="relative py-28">
+      <section className="relative py-12">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
             <p className="text-xs uppercase tracking-[0.25em] text-[#5B21B6] font-bold mb-2">
@@ -233,7 +233,7 @@ export default function LandingPage() {
       <VideoStorySection />
 
       {/* ============================== GALLERY ============================== */}
-      <section id="gallery" className="relative py-28">
+      <section id="gallery" className="relative py-12">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} className="text-center max-w-2xl mx-auto mb-12">
             <p className="text-xs uppercase tracking-[0.25em] text-[#5B21B6] font-bold mb-2">Celebration Lookbook</p>
@@ -252,7 +252,7 @@ export default function LandingPage() {
       <TestimonialsSection />
 
       {/* ============================ TRUST / WHY ============================ */}
-      <section className="relative py-28 bg-white border-y border-[#E9E4F5]">
+      <section className="relative py-16 bg-white border-y border-[#E9E4F5]">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} className="text-center mb-16">
             <p className="text-xs uppercase tracking-[0.25em] text-[#5B21B6] font-bold mb-2">Why Celebro</p>
@@ -285,7 +285,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================= FINAL CTA ============================= */}
-      <section className="relative py-32 overflow-hidden bg-[#3B176D] text-white">
+      <section className="relative py-20 overflow-hidden bg-[#3B176D] text-white">
         <div className="relative max-w-4xl mx-auto px-6 text-center z-10 text-white">
           <motion.h2 variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }} className="font-display text-4xl sm:text-6xl font-bold leading-tight">
             Your perfect celebration is closer than you think.
@@ -310,56 +310,3 @@ export default function LandingPage() {
   );
 }
 
-function LandingFooter() {
-  const cols: { title: string; links: string[] }[] = [
-    { title: "Celebrations", links: CATEGORIES.map((c) => c.title) },
-    { title: "Company", links: ["About Us", "How It Works", "Verified Partners", "Careers"] },
-    { title: "Support", links: ["Help Center", "Planner Portal", "Trust & Safety", "Terms of Service", "Privacy Policy"] },
-  ];
-  return (
-    <footer className="relative bg-white border-t border-[#E9E4F5]">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div>
-          <Link to="/" className="inline-block">
-            <img src="/images/celebro_logo.png" alt="Celebro" className="h-24 sm:h-28 w-auto object-contain" />
-          </Link>
-          <p className="text-sm text-[#6B6780] mt-3 max-w-xs leading-relaxed font-medium">
-            Plan. Connect. Celebrate. The ultimate luxury marketplace connecting dreamers with master event specialists.
-          </p>
-          <div className="mt-6">
-            <p className="text-xs uppercase tracking-widest text-[#6B6780] font-bold mb-3">Stay Inspired</p>
-            <div className="flex gap-2 max-w-xs">
-              <input
-                type="email"
-                placeholder="you@email.com"
-                className="flex-1 bg-[#F5F3FF] border border-[#E9E4F5] rounded-[10px] px-4 py-3 text-sm text-[#17142A] placeholder:text-[#6B6780] outline-none focus:border-[#5B21B6] font-medium"
-              />
-              <Link to="/register" className="btn-primary text-sm font-semibold px-5 py-3 rounded-[10px] shadow-xs">
-                Join
-              </Link>
-            </div>
-          </div>
-        </div>
-        {cols.map((col) => (
-          <div key={col.title}>
-            <p className="text-xs uppercase tracking-widest text-[#6B6780] font-bold mb-4">{col.title}</p>
-            <div className="flex flex-col gap-2.5 text-sm text-[#6B6780] font-medium">
-              {col.links.map((l) => (
-                <span key={l} className="hover:text-[#5B21B6] transition-colors cursor-pointer">{l}</span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="max-w-7xl mx-auto px-6 pb-8 flex flex-wrap items-center justify-between gap-4 text-xs text-[#6B6780] border-t border-[#E9E4F5] pt-6 font-medium">
-        <span>© {new Date().getFullYear()} Celebro Inc. All rights reserved.</span>
-        <div className="flex gap-6">
-          <span className="hover:text-[#5B21B6] cursor-pointer">Instagram</span>
-          <span className="hover:text-[#5B21B6] cursor-pointer">Pinterest</span>
-          <span className="hover:text-[#5B21B6] cursor-pointer">Twitter / X</span>
-          <span className="hover:text-[#5B21B6] cursor-pointer">LinkedIn</span>
-        </div>
-      </div>
-    </footer>
-  );
-}

@@ -94,6 +94,14 @@ DATABASES = {
     }
 }
 
+# Use fast, in-memory SQLite database for running test suite to avoid Postgres permissions issues
+import sys
+if "test" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
+
 AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [

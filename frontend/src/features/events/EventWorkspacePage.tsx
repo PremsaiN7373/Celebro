@@ -94,9 +94,9 @@ function CollaboratorsSection({ eventId, isOwner }: { eventId: string; isOwner: 
   };
 
   return (
-    <div className="bg-noir-card border border-white/12 rounded-3xl p-6 shadow-xl max-w-xl mt-6">
-      <p className="font-cinematic text-lg font-bold text-white mb-1">Co-Organizers</p>
-      <p className="text-xs text-[#A8A1B5] mb-4">
+    <div className="bg-white border border-[#E9E4F5] rounded-2xl p-6 shadow-soft max-w-xl mt-6">
+      <p className="font-display text-lg font-bold text-[#17142A] mb-1">Co-Organizers</p>
+      <p className="text-xs text-[#6B6780] mb-4">
         Co-organizers can manage guest lists and budget parameters alongside you.
       </p>
       {isOwner && (
@@ -119,15 +119,15 @@ function CollaboratorsSection({ eventId, isOwner }: { eventId: string; isOwner: 
         </form>
       )}
       {loading ? (
-        <p className="text-xs text-white/50">Loading co-organizers...</p>
+        <p className="text-xs text-[#6B6780]/60">Loading co-organizers...</p>
       ) : collaborators.length === 0 ? (
-        <p className="text-xs text-white/50">No co-organizers added yet.</p>
+        <p className="text-xs text-[#6B6780]/60">No co-organizers added yet.</p>
       ) : (
         <div className="space-y-2">
           {collaborators.map((c) => (
-            <div key={c.id} className="text-xs text-white bg-white/[0.04] p-3 rounded-2xl border border-white/10 flex items-center justify-between">
-              <span className="font-semibold">{c.username}</span>
-              <span className="text-champagne-400">{c.email}</span>
+            <div key={c.id} className="text-xs text-[#17142A] bg-[#F5F3FF]/55 p-3.5 rounded-xl border border-softborder flex items-center justify-between">
+              <span className="font-bold">{c.username}</span>
+              <span className="text-[#5B21B6] font-semibold">{c.email}</span>
             </div>
           ))}
         </div>
@@ -197,12 +197,12 @@ function WeatherWidget({ date, venue }: { date: string; venue: string }) {
   if (status === "unavailable") return null;
 
   return (
-    <div className="bg-noir-card border border-white/12 rounded-3xl p-6 shadow-xl max-w-xl mt-6">
-      <p className="font-cinematic text-lg font-bold text-white mb-1">Venue Weather Forecast</p>
+    <div className="bg-white border border-[#E9E4F5] rounded-2xl p-6 shadow-soft max-w-xl mt-6">
+      <p className="font-display text-lg font-bold text-[#17142A] mb-1">Venue Weather Forecast</p>
       {status === "loading" ? (
-        <p className="text-xs text-white/50">Retrieving forecast...</p>
+        <p className="text-xs text-[#6B6780]/60">Retrieving forecast...</p>
       ) : (
-        <p className="text-sm font-medium text-txtsecondary">
+        <p className="text-sm font-semibold text-[#17142A]">
           {weatherEmoji(weather!.code)} {Math.round(weather!.temp)}°C expected in {venue}
         </p>
       )}
@@ -1076,31 +1076,31 @@ function ChatTab({ eventId }: { eventId: string }) {
     loadBookings();
   }, [eventId]);
 
-  if (loading) return <p className="text-white/60 text-sm">Loading chat sessions...</p>;
+  if (loading) return <p className="text-[#6B6780]/60 text-sm font-medium">Loading chat sessions...</p>;
 
   const activeBookings = bookings.filter(b => b.status === "accepted");
 
   return (
     <div className="max-w-xl space-y-4">
-      <div className="bg-noir-card border border-white/12 rounded-3xl p-6 shadow-xl">
-        <h3 className="font-cinematic text-lg font-bold text-white mb-2">Event Chat Sessions</h3>
-        <p className="text-xs text-[#A8A1B5] mb-5">Select an accepted booking to start planning details with your planner.</p>
+      <div className="bg-white border border-[#E9E4F5] rounded-2xl p-6 shadow-soft">
+        <h3 className="font-display text-lg font-bold text-[#17142A] mb-1">Event Chat Sessions</h3>
+        <p className="text-xs text-[#6B6780] mb-5">Select an accepted booking to start planning details with your planner.</p>
 
         {activeBookings.length === 0 ? (
-          <p className="text-sm text-white/70">
+          <p className="text-sm text-[#6B6780] font-medium">
             No active chat sessions. Chat becomes available once a planner accepts your booking request.
           </p>
         ) : (
           <div className="space-y-3">
             {activeBookings.map((b) => (
-              <div key={b.id} className="flex items-center justify-between p-3.5 border border-white/10 bg-white/[0.02] rounded-xl hover:bg-white/[0.04] transition-all duration-150">
+              <div key={b.id} className="flex items-center justify-between p-3.5 border border-softborder bg-[#F5F3FF]/50 rounded-xl hover:bg-[#F5F3FF]/80 transition-all duration-150">
                 <div>
-                  <p className="font-bold text-sm text-white">💬 {b.planner_name}</p>
-                  <p className="text-xs text-[#A8A1B5] mt-0.5">{b.package_title || "Custom Package"}</p>
+                  <p className="font-bold text-sm text-[#17142A]">💬 {b.planner_name}</p>
+                  <p className="text-xs text-[#6B6780] mt-0.5">{b.package_title || "Custom Package"}</p>
                 </div>
                 <Link
                   to={`/chat/${b.id}`}
-                  className="btn-primary text-xs font-semibold px-4 py-2 rounded-[10px] shadow-sm hover:scale-105 active:scale-95 transition-all"
+                  className="btn-primary text-xs font-semibold px-4 py-2.5 rounded-[10px] shadow-sm hover:scale-105 active:scale-95 transition-all"
                 >
                   Open Chat ➔
                 </Link>
@@ -1132,78 +1132,186 @@ export default function EventWorkspacePage() {
     load();
   }, [id]);
 
+  const getOccasionIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "birthday":
+        return "🎂";
+      case "surprise_birthday":
+        return "🎉";
+      case "anniversary":
+        return "💍";
+      case "baby_shower":
+        return "🍼";
+      case "proposal":
+        return "💐";
+      case "housewarming":
+        return "🏡";
+      case "graduation":
+        return "🎓";
+      case "farewell":
+        return "👋";
+      case "family_gathering":
+        return "👨‍👩‍👧‍👦";
+      case "corporate_party":
+        return "🏢";
+      case "product_launch":
+        return "🚀";
+      case "team_celebration":
+        return "🥂";
+      case "office_anniversary":
+        return "🏆";
+      case "employee_appreciation":
+        return "🌟";
+      case "networking":
+        return "🤝";
+      case "custom":
+        return "✨";
+      default:
+        return "🎉";
+    }
+  };
+
   if (loading) return <p className="text-white/60 text-sm">Loading workspace...</p>;
   if (!event) return <p className="text-white/60 text-sm">Event not found.</p>;
 
   return (
-    <div className="space-y-8 pb-16">
-      <Link to="/dashboard" className="text-xs font-semibold text-[#5B21B6] hover:underline inline-block">
+    <div className="space-y-6 pb-16">
+      <Link to="/dashboard" className="text-xs font-bold text-[#5B21B6] hover:underline inline-block">
         ← Back to Dashboard
       </Link>
 
       <div className="bg-gradient-to-br from-[#3B176D] via-[#5B21B6] to-[#8B5CF6] text-white rounded-3xl p-8 shadow-soft relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 blur-3xl pointer-events-none" />
-        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-purple-200 block mb-1">
-          {event.event_type.replace("_", " ")} Workspace
-        </span>
-        <h1 className="font-cinematic text-4xl sm:text-5xl font-bold text-white">{event.name}</h1>
-        <p className="text-sm text-purple-100 mt-2">
-          📅 {event.date} {event.time ? `at ${event.time}` : ""} • 📍 {event.venue || "Private Venue TBD"}
-        </p>
-      </div>
-
-      <div className="event-workspace-page space-y-8">
-        {/* Tabs Row */}
-      <div className="flex gap-2 border-b border-white/12 pb-3 overflow-x-auto">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
-              tab === t
-                ? "bg-gradient-to-r from-royal-500 to-celebrate-500 text-white shadow-lg shadow-royal-500/25"
-                : "text-white/60 hover:text-white hover:bg-white/[0.06]"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {tab === "Overview" && (
-        <div className="bg-noir-card border border-white/12 rounded-3xl p-7 space-y-4 text-sm max-w-xl shadow-xl">
-          <p><span className="text-[#A8A1B5] font-semibold">Venue:</span> <span className="text-white font-bold">{event.venue || "TBD"}</span></p>
-          <p><span className="text-[#A8A1B5] font-semibold">Budget:</span> <span className="text-white font-bold">{event.budget ? `₹${Number(event.budget).toLocaleString()}` : "Flexible"}</span></p>
-          <p><span className="text-[#A8A1B5] font-semibold">Guest Count:</span> <span className="text-white font-bold">{event.guest_count}</span></p>
-          <p><span className="text-[#A8A1B5] font-semibold">Decor Theme:</span> <span className="text-white font-bold">{event.theme || "Custom"}</span></p>
-          {event.description && (
-            <p><span className="text-[#A8A1B5] font-semibold">Description:</span> <span className="text-white/90">{event.description}</span></p>
-          )}
-          <div className="pt-4 flex gap-3">
-            <Link
-              to={`/marketplace?event=${event.id}`}
-              className="btn-primary text-xs"
-            >
-              Browse Planners for this Event ➔
-            </Link>
-          </div>
+        {/* decorative glassmorphic rings/blobs */}
+        <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full bg-white/10 blur-2xl z-0" />
+        <div className="absolute -bottom-16 -left-8 w-48 h-48 rounded-full bg-white/10 blur-2xl z-0" />
+        <div className="absolute top-6 right-10 text-5xl opacity-90 animate-bounce duration-1000 z-0">
+          {getOccasionIcon(event.event_type)}
         </div>
-      )}
+        <div className="absolute bottom-6 right-32 text-3xl opacity-75 -rotate-12 z-0">✨</div>
+        <div className="absolute top-16 right-40 text-2xl opacity-60 rotate-12 z-0">🎈</div>
 
-      {tab === "Overview" && id && (
-        <>
-          <WeatherWidget date={event.date} venue={event.venue} />
-          <CollaboratorsSection eventId={id} isOwner={event.is_owner} />
-        </>
-      )}
+        <div className="absolute inset-0 z-0 opacity-15 mix-blend-overlay">
+          <img
+            src="/images/proposal_hero.png"
+            alt="Event Atmosphere"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-      {tab === "Guests" && id && <GuestsTab eventId={id} />}
-      {tab === "Invite" && id && <InviteTab eventId={id} />}
-      {tab === "Bookings" && id && <BookingsTab eventId={id} />}
-      {tab === "Budget" && id && <BudgetTab eventId={id} totalBudget={event.budget} />}
-      {tab === "Timeline" && id && <TimelineTab eventId={id} />}
-      {tab === "Chat" && id && <ChatTab eventId={id} />}
-      {tab === "Gallery" && id && <GalleryTab eventId={id} />}
+        <div className="relative z-10">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-purple-200 font-bold block mb-1">
+            {event.event_type.replace("_", " ")} Workspace
+          </span>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-white relative leading-tight">
+            {event.name}
+          </h1>
+          <p className="text-xs sm:text-sm text-purple-100 mt-2 font-medium relative">
+            📅 {event.date} {event.time ? `at ${event.time}` : ""} · 📍 {event.venue || "Private Venue TBD"}
+          </p>
+        </div>
+      </div>
+
+      <div className="event-workspace-page space-y-6">
+        {/* Tabs Row */}
+        <div className="flex gap-2 border-b border-softborder pb-4 overflow-x-auto scrollbar-none">
+          {TABS.map((t) => {
+            const active = tab === t;
+            return (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                  active
+                    ? "bg-gradient-to-r from-[#5B21B6] to-[#8B5CF6] text-white shadow-md shadow-purple-600/10 font-bold"
+                    : "bg-white text-txtsecondary border border-softborder hover:bg-[#F5F3FF] hover:text-[#5B21B6] hover:border-[#5B21B6]/30 shadow-xs"
+                }`}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
+
+        {tab === "Overview" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white border border-[#E9E4F5] rounded-2xl p-5 shadow-soft transition-all hover:-translate-y-0.5 duration-200">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl bg-[#F5F3FF] p-2 rounded-xl text-[#5B21B6]">📍</span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-[#6B6780] tracking-wider">Venue</p>
+                    <p className="text-sm font-bold text-[#17142A] mt-0.5 truncate max-w-[120px]" title={event.venue || "TBD"}>
+                      {event.venue || "TBD"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E9E4F5] rounded-2xl p-5 shadow-soft transition-all hover:-translate-y-0.5 duration-200">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl bg-[#F5F3FF] p-2 rounded-xl text-[#5B21B6]">💰</span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-[#6B6780] tracking-wider">Target Budget</p>
+                    <p className="text-sm font-bold text-[#17142A] mt-0.5">
+                      {event.budget ? `₹${Number(event.budget).toLocaleString()}` : "Flexible"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E9E4F5] rounded-2xl p-5 shadow-soft transition-all hover:-translate-y-0.5 duration-200">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl bg-[#F5F3FF] p-2 rounded-xl text-[#5B21B6]">👥</span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-[#6B6780] tracking-wider">Guest Count</p>
+                    <p className="text-sm font-bold text-[#17142A] mt-0.5">{event.guest_count} attending</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#E9E4F5] rounded-2xl p-5 shadow-soft transition-all hover:-translate-y-0.5 duration-200">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl bg-[#F5F3FF] p-2 rounded-xl text-[#5B21B6]">🎨</span>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-[#6B6780] tracking-wider">Decor Theme</p>
+                    <p className="text-sm font-bold text-[#17142A] mt-0.5 capitalize">{event.theme || "Custom"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {event.description && (
+              <div className="bg-white border border-[#E9E4F5] rounded-2xl p-6 shadow-soft">
+                <h3 className="font-display text-lg font-bold text-[#17142A] mb-2">Workspace Notes & Details</h3>
+                <p className="text-sm text-[#6B6780] leading-relaxed font-medium">{event.description}</p>
+              </div>
+            )}
+
+            <div className="pt-2 flex gap-3">
+              <Link
+                to={`/marketplace?event=${event.id}`}
+                className="btn-primary text-xs font-semibold px-6 py-3 rounded-[10px] shadow-md hover:scale-105 transition-all inline-flex items-center gap-2"
+              >
+                <span>🔍 Find Planners for this Event</span>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {tab === "Overview" && id && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <WeatherWidget date={event.date} venue={event.venue} />
+            <CollaboratorsSection eventId={id} isOwner={event.is_owner} />
+          </div>
+        )}
+
+        {tab === "Guests" && id && <GuestsTab eventId={id} />}
+        {tab === "Invite" && id && <InviteTab eventId={id} />}
+        {tab === "Bookings" && id && <BookingsTab eventId={id} />}
+        {tab === "Budget" && id && <BudgetTab eventId={id} totalBudget={event.budget} />}
+        {tab === "Timeline" && id && <TimelineTab eventId={id} />}
+        {tab === "Chat" && id && <ChatTab eventId={id} />}
+        {tab === "Gallery" && id && <GalleryTab eventId={id} />}
       </div>
     </div>
   );

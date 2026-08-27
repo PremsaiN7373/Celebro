@@ -76,79 +76,144 @@ export default function PlannerPortfolioPage() {
   };
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="font-display text-2xl text-ink-900 dark:text-white mb-1 font-semibold">
-        Your Portfolio
-      </h1>
-      <p className="text-sm text-ink-500 mb-6">
-        Showcase past work — this shows on your public profile for customers browsing the Marketplace.
-      </p>
+    <div className="max-w-6xl w-full space-y-6">
+      {/* Top Banner Card */}
+      <div className="bg-gradient-to-r from-[#2e1065] via-[#1e1b4b] to-[#120e2e] text-white rounded-[24px] p-6 shadow-sm relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="space-y-1 relative z-10 max-w-2xl">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#D8B4FE]">Luxury Showcase</span>
+          <h2 className="font-display text-2xl font-extrabold tracking-tight">Your Creative Portfolio</h2>
+          <p className="text-xs text-[#C084FC] font-medium leading-relaxed mt-1">
+            Showcase your finest weddings, birthdays, and decor setups. High-resolution imagery builds trust and helps celebrators select you on the marketplace.
+          </p>
+        </div>
+        
+        <div className="flex gap-4 shrink-0 relative z-10">
+          <div className="bg-white/10 backdrop-blur-xs px-4 py-3 rounded-2xl border border-white/10 text-center min-w-[90px]">
+            <p className="text-[10px] text-purple-300 font-bold uppercase tracking-wider">Photos</p>
+            <p className="text-xl font-extrabold mt-1">{photos.length} Items</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-xs px-4 py-3 rounded-2xl border border-white/10 text-center min-w-[90px]">
+            <p className="text-[10px] text-green-300 font-bold uppercase tracking-wider">Visibility</p>
+            <p className="text-xl font-extrabold text-green-400 mt-1">Public</p>
+          </div>
+        </div>
+      </div>
 
-      <form onSubmit={handleAdd} className="flex flex-col gap-3 mb-8 border rounded-xl p-4 bg-white max-w-xl">
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider block">Upload Photo file</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-              className="text-xs text-neutral-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 cursor-pointer"
-            />
-            {imageUrl && (
-              <img
-                src={imageUrl}
-                alt="Upload preview"
-                className="w-10 h-10 object-cover rounded-lg border shrink-0"
-              />
-            )}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Form */}
+        <div className="lg:col-span-5">
+          <div className="bg-white border border-[#E9E4F5] rounded-2xl p-6 shadow-2xs space-y-5">
+            <h2 className="font-display text-lg font-bold text-[#17142A] border-b border-[#F5F3FF] pb-3">Add Portfolio Photo</h2>
+            <form onSubmit={handleAdd} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#6B6780] uppercase tracking-wider block">Upload Photo File</label>
+                <div className="border-2 border-dashed border-[#E9E4F5] rounded-xl p-4 flex flex-col items-center justify-center bg-[#FAF9FF] hover:bg-[#F3EEFF] transition-all cursor-pointer relative group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                  {imageUrl ? (
+                    <div className="flex items-center gap-3 w-full">
+                      <img src={imageUrl} alt="Portfolio preview" className="w-12 h-12 object-cover rounded-lg border border-[#E9E4F5] bg-white shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold text-[#17142A] truncate">Photo Uploaded</p>
+                        <p className="text-[10px] text-[#6B6780]">Click to replace image</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-2">
+                      <span className="text-xl">📸</span>
+                      <p className="text-xs font-bold text-[#8B5CF6] mt-1 group-hover:underline">Upload Photo File</p>
+                      <p className="text-[9px] text-[#6B6780] mt-0.5">PNG, JPG, JPEG (Max 10MB)</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="text-[10px] text-[#A78BFA] font-extrabold text-center uppercase tracking-widest my-1">— OR USE EXTERNAL URL —</div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-[#6B6780] uppercase tracking-wider block">Image URL</label>
+                <input
+                  className="w-full border border-[#E9E4F5] rounded-xl px-4 py-2.5 text-sm bg-[#FCFAFF] focus:bg-white focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6] transition-all outline-none"
+                  placeholder="https://images.unsplash.com/photo-..."
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-[#6B6780] uppercase tracking-wider block">Caption</label>
+                <input
+                  className="w-full border border-[#E9E4F5] rounded-xl px-4 py-2.5 text-sm bg-[#FCFAFF] focus:bg-white focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6] transition-all outline-none"
+                  placeholder="Describe this celebration photo (e.g. Royal Banquet Table Arrangement)"
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                />
+              </div>
+
+              <button
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-xs disabled:opacity-50 mt-2 hover:scale-102 active:scale-98 transition-all"
+                type="submit"
+                disabled={adding}
+              >
+                {adding ? "Adding..." : "Add to Portfolio"}
+              </button>
+            </form>
           </div>
         </div>
 
-        <div className="text-xs text-neutral-400 font-semibold text-center my-1">— OR USE EXTERNAL URL —</div>
+        {/* Right Column: Grid list */}
+        <div className="lg:col-span-7 space-y-5">
+          <h2 className="font-display text-lg font-bold text-[#17142A] border-b border-[#F5F3FF] pb-3">Active Showcase</h2>
 
-        <input
-          className="input-field w-full"
-          placeholder="Image URL (https://...)"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-        />
-        <input
-          className="input-field w-full"
-          placeholder="Caption (optional)"
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-        />
-        <button className="btn-primary self-start" disabled={adding} type="submit">
-          {adding ? "Adding..." : "Add photo"}
-        </button>
-      </form>
-
-      {loading ? (
-        <p className="text-ink-400 text-sm">Loading portfolio...</p>
-      ) : photos.length === 0 ? (
-        <p className="text-ink-400 text-sm">No portfolio photos yet.</p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {photos.map((photo) => (
-            <div key={photo.id} className="relative group">
-              <img
-                src={photo.image_url}
-                alt={photo.caption || "Portfolio photo"}
-                className="w-full h-32 object-cover rounded-lg border border-ink-200 dark:border-ink-700"
-              />
-              {photo.caption && (
-                <p className="text-xs text-ink-500 mt-1 truncate">{photo.caption}</p>
-              )}
-              <button
-                className="absolute top-1 right-1 bg-white/90 text-red-500 text-xs rounded px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => removePhoto(photo.id)}
-              >
-                Remove
-              </button>
+          {loading ? (
+            <p className="text-neutral-500 font-semibold">Loading portfolio...</p>
+          ) : photos.length === 0 ? (
+            <div className="bg-white border border-[#E9E4F5] rounded-2xl p-10 text-center shadow-2xs">
+              <p className="text-[#17142A] font-bold text-lg">No portfolio photos yet</p>
+              <p className="text-[#6B6780] text-sm mt-1">Use the editor on the left to build your photo showcase.</p>
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {photos.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="bg-white border border-[#E9E4F5] rounded-2xl overflow-hidden shadow-2xs hover:border-[#8B5CF6]/30 transition-all duration-300 flex flex-col justify-between group"
+                >
+                  <div className="relative aspect-video bg-[#FAF9FF] overflow-hidden shrink-0">
+                    <img
+                      src={photo.image_url}
+                      alt={photo.caption || "Portfolio item"}
+                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                    />
+                    <button
+                      onClick={() => removePhoto(photo.id)}
+                      className="absolute top-2.5 right-2.5 p-1.5 bg-white/80 hover:bg-red-50 text-[#C94B63] hover:text-red-600 rounded-full backdrop-blur-xs shadow-2xs hover:scale-110 transition-all"
+                      title="Delete photo"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+
+                  {photo.caption && (
+                    <div className="p-3 bg-white border-t border-[#F5F3FF] shrink-0">
+                      <p className="text-xs font-bold text-[#17142A] truncate">
+                        {photo.caption}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ export default function TestimonialsSection() {
   const reduce = !!useReducedMotion();
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <motion.p

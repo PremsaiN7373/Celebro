@@ -89,7 +89,10 @@ export default function ChatPage() {
           <h1 className="font-display text-2xl font-bold text-[#17142A]">Messages</h1>
           <p className="text-xs text-[#6B6780] font-medium">Real-time celebration coordination with your planner</p>
         </div>
-        <Link to="/bookings" className="btn-secondary text-xs">
+        <Link
+          to={user?.role === "planner" ? "/planner-bookings" : "/bookings"}
+          className="btn-secondary text-xs"
+        >
           ← Back to Bookings
         </Link>
       </div>
